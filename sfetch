@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Главная функция
+main() {
+    get_info
+    ascii_show="true" # true/false
+    case $ascii_show in
+        "true") ascii_fetch ;;
+        *) without_ascii_fetch ;;
+    esac
+}
+
+# Собираем информацию о системе
+get_info() {
+    os='Arch Linux'
+    kernel="$(uname -sr)"
+    de="${DESKTOP_SESSION^}"
+    uptime="$(uptime -p | sed 's/up //')"
+    packages="$(pacman -Q | wc -l)"
+    shell="$(basename $SHELL)"; shell="${shell^}"
+}
+
+# Фетч с ascii-артом
+ascii_fetch() {
+    ascii_color=$((RANDOM % 7))
+
+    case $ascii_color in
+        "0") ascii_color="\033[1;31m" ;;
+        "1") ascii_color="\033[1;32m" ;;
+        "2") ascii_color="\033[1;33m" ;;
+        "3") ascii_color="\033[1;34m" ;;
+        "4") ascii_color="\033[1;35m" ;;
+        "5") ascii_color="\033[1;36m" ;;
+        "6") ascii_color="\033[1;37m" ;;
+    esac
+
+    echo ""
+    echo -e "$ascii_color  /\_/\    \e[1;31m  OS\e[0m : \e[1;37m$os"
+    echo -e "$ascii_color ( o.o )   \e[1;32m  Kernel\e[0m : \e[1;37m$kernel"
+    echo -e "$ascii_color  > ^ <    \e[1;33m  Appearance\e[0m : \e[1;37m$de"
+    echo -e "$ascii_color / \ / \_  \e[1;34m  Uptime\e[0m : \e[1;37m2 hours, 0 minutes"
+    echo -e "$ascii_color \_____/^\ \e[1;35m  Packages\e[0m : \e[1;37m$packages"
+    echo -e "$ascii_color       o_/ \e[1;36m  Shell\e[0m : \e[1;37m$shell"
+    echo ""
+}
+
+# Фетч без ascii-арта
+without_ascii_fetch() {
+    echo ""
+    echo -e "\e[1;31m  OS\e[0m : \e[1;37m$os"
+    echo -e "\e[1;32m  Kernel\e[0m : \e[1;37m$bgray$kernel"
+    echo -e "\e[1;33m  Appearance\e[0m : \e[1;37m$bgray$de"
+    echo -e "\e[1;34m  Uptime\e[0m : \e[1;37m$uptime"
+    echo -e "\e[1;35m  Packages\e[0m : \e[1;37m$packages"
+    echo -e "\e[1;36m  Shell\e[0m : \e[1;37m$shell"
+    echo ""
+}
+
+main "$@"
